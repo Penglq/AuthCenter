@@ -9,9 +9,9 @@ import (
 
 func NewRouter() common.Router {
 	r := common.Router{gin.New()}
-
 	r.SetMiddlewares(
 		middlewares.NewApiLog(),
+		middlewares.NewAuthToken(),
 		// middlewares.NewAuth(),
 	).SetRouter(
 		v1.Admin,

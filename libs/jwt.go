@@ -55,42 +55,56 @@ func (j *Jwt) CreateToken() (string, error) {
 }
 
 // 解析token
-func (j *Jwt) ParseToken() (string, error) {
+func (j *Jwt) ParseToken() error {
 
 	token, err := jwt.Parse(j.TokenString, func(token *jwt.Token) (interface{}, error) {
 		return []byte(j.SecretKey), nil
 	})
 	fmt.Println(token)
 	if err != nil {
-		return "", fmt.Errorf("jwt parse error | err | %s", err.Error())
+		return fmt.Errorf("jwt parse error | err | %s", err.Error())
 	}
 	var (
-		subject, audience string
-		ok                bool
-		audienceMaps      = map[string]int{
+		ok           bool
+		audienceMaps = map[string]int{
 			AudienceApp: 1,
 			AudienceWap: 1,
 		}
 		claims jwt.MapClaims
 	)
 	if claims, ok = token.Claims.(jwt.MapClaims); !ok {
-		return "", fmt.Errorf("token assert claims failed | claims | %+v ", claims)
+		return fmt.Errorf("token assert claims failed | claims | %+v ", claims)
 	}
 	if !token.Valid {
-		return "", fmt.Errorf("token invalid")
+		return fmt.Errorf("token invalid")
 	}
 
-	if subject, ok = claims["sub"].(string); !ok {
-		return "", fmt.Errorf("claims assert subject to string failed | claims | %+v ", claims)
+	if j.Subject, ok = claims["sub"].(string); !ok {
+		return fmt.Errorf("claims assert subject to string failed | claims | %+v ", claims)
 	}
 
-	if audience, ok = claims["aud"].(string); !ok {
-		return "", fmt.Errorf("claims assert audience to string failed | claims | %+v ", claims)
+	if j.SubPath, ok = claims["subp"].(string); !ok {
+		return fmt.Errorf("claims assert subPath to string failed | claims | %+v ", claims)
+	}
+
+	if j.Domain, ok = claims["dom"].(string); !ok {
+		return fmt.Errorf("claims assert domain to string failed | claims | %+v ", claims)
+	}
+
+	if j.Audience, ok = claims["aud"].(string); !ok {
+		return fmt.Errorf("claims assert audience to string failed | claims | %+v ", claims)
 	}
 
 	// 判断token 受众类型  // 只有 app 和 wap 可以通过 manage 用户在后台 不在go项目中
-	if _, ok = audienceMaps[audience]; !ok {
-		return "", fmt.Errorf("audience is invalid | audience | %s", audience)
+	if _, ok = audienceMaps[j.Audience]; !ok {
+		return fmt.Errorf("audience is invalid | audience | %s", j.Audience)
 	}
-	return subject, nil
+
+	return nil
 }
+
+const (
+	Subject     = `sub`
+	SubjectPath = `subPath`
+	Domain      = `domain`
+)
