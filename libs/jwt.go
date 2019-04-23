@@ -7,11 +7,17 @@ import (
 )
 
 const (
-	AudienceApp = "a"  // 接收方 app
-	AudienceWap = "w"  // 接收方 wap
-	AudienceH5  = "H5" // 接收方 H5
+	AudienceApp = "a" // 接收方 app
+	AudienceWap = "w" // 接收方 wap
 	DefaultIss  = ``
+	SecretKey   = `AuthCenter`
 )
+
+func NewJwt() *Jwt {
+	return &Jwt{
+		SecretKey: SecretKey,
+	}
+}
 
 type Jwt struct {
 	Audience    string `json:"aud,omitempty"` // aud 标识token的接收者.
@@ -21,14 +27,14 @@ type Jwt struct {
 	Issuer      string `json:"iss,omitempty"` // iss 是签名的发行者.
 	NotBefore   int64  `json:"nbf,omitempty"` // nbf 这条token信息生效时间.这个值可以不设置,但是设定后,一定要小于当前Unix UTC,否则token将会延迟生效.
 	Subject     string `json:"sub"`           // sub 签名面向的用户(用户名)
-	SubPath     string `json:"subp"`          // subPath 用户访问路径
+	Object      string `json:"obj"`           // obj 用户访问路径
 	Domain      string `json:"dom"`           // 租户信息
 	SecretKey   string `json:"secretKey"`     // jwt签名密钥
 	TokenString string `json:"token"`         // 生成的token
 }
 
 // 创建 Token
-func (j *Jwt) CreateToken() (string, error) {
+func (j *Jwt) GenerateToken() (string, error) {
 
 	jwtSvc := jwt.New(jwt.SigningMethodHS256)
 	claims := make(jwt.MapClaims)
@@ -41,7 +47,7 @@ func (j *Jwt) CreateToken() (string, error) {
 	claims["exp"] = exp
 	claims["iat"] = iat
 	claims["sub"] = j.Subject
-	claims["subp"] = j.SubPath
+	claims["obj"] = j.Object
 	claims["dom"] = j.Domain
 	claims["aud"] = j.Audience
 	claims["jti"] = j.Audience
@@ -56,11 +62,10 @@ func (j *Jwt) CreateToken() (string, error) {
 
 // 解析token
 func (j *Jwt) ParseToken() (string, error) {
-
 	token, err := jwt.Parse(j.TokenString, func(token *jwt.Token) (interface{}, error) {
 		return []byte(j.SecretKey), nil
 	})
-	fmt.Println(token)
+
 	if err != nil {
 		return "", fmt.Errorf("jwt parse error | err | %s", err.Error())
 	}
@@ -80,11 +85,17 @@ func (j *Jwt) ParseToken() (string, error) {
 		return "", fmt.Errorf("token invalid")
 	}
 
-	if subject, ok = claims["sub"].(string); !ok {
+	if j.Subject, ok = claims["sub"].(string); !ok {
 		return "", fmt.Errorf("claims assert subject to string failed | claims | %+v ", claims)
 	}
+	if j.Object, ok = claims["subp"].(string); !ok {
+		return "", fmt.Errorf("claims assert object to string failed | claims | %+v ", claims)
+	}
+	if j.Domain, ok = claims["dom"].(string); !ok {
+		return "", fmt.Errorf("claims assert domain to string failed | claims | %+v ", claims)
+	}
 
-	if audience, ok = claims["aud"].(string); !ok {
+	if j.Audience, ok = claims["aud"].(string); !ok {
 		return "", fmt.Errorf("claims assert audience to string failed | claims | %+v ", claims)
 	}
 

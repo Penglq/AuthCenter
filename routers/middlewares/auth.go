@@ -5,8 +5,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func NewAuth(e *casbin.SyncedEnforcer) gin.HandlerFunc {
+func NewCasbin(e *casbin.SyncedEnforcer) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		e.EnforceSafe()
 	}
+}
+
+type checkAuth struct {
+	Subject string
+	Object  string
+	Domain  string
 }

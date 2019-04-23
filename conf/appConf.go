@@ -26,3 +26,8 @@ type Logger struct {
 	FileMaxNSize int
 	AlertConf    QLog.AlertApiConfig
 }
+
+// headers
+const (
+	XAuthToken = `X-AUTH-TOKEN`
+)

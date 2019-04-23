@@ -1,7 +1,10 @@
 package main
 
-import "github.com/Penglq/AuthCenter/routers"
+import (
+	"fmt"
+	"github.com/Penglq/AuthCenter/routers"
+)
 
 func main()  {
-	routers.NewRouter().Run()
+	fmt.Println(routers.NewRouter().Run(":8989"))
 }
