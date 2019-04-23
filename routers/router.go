@@ -10,7 +10,6 @@ import (
 
 func NewRouter() common.Router {
 	r := common.Router{gin.New()}
-<<<<<<< HEAD
 
 	e, err := casbin.NewSyncedEnforcerSafe(`conf/rbac_domain_model.conf`, `conf/rbac_domain_policy.csv`)
 	if err != nil {
@@ -22,12 +21,6 @@ func NewRouter() common.Router {
 		middlewares.NewApiLog(),
 		middlewares.NewJwt(),
 		middlewares.NewCasbin(e),
-=======
-	r.SetMiddlewares(
-		middlewares.NewApiLog(),
-		middlewares.NewAuthToken(),
-		// middlewares.NewAuth(),
->>>>>>> 48dce5218152edb99f46b30b21d2bf416a220677
 	).SetRouter(
 		v1.Admin,
 	)

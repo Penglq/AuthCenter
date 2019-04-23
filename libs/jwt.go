@@ -2,6 +2,7 @@ package libs
 
 import (
 	"fmt"
+	"github.com/dgrijalva/jwt-go"
 	"time"
 )
 

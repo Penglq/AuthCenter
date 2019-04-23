@@ -12,7 +12,7 @@ func NewJwt() gin.HandlerFunc {
 
 		jwts := libs.NewJwt()
 		jwts.TokenString = token
-		_, err := jwts.ParseToken()
+		err := jwts.ParseToken()
 		if err != nil {
 			// todo 错误
 		}

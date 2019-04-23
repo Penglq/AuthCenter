@@ -1,7 +1,7 @@
 package v1
 
 import (
-	"github.com/Penglq/AuthCenter/controllers/v1/admin"
+	"github.com/Penglq/AuthCenter/endpoints/v1/admin"
 	"github.com/Penglq/AuthCenter/routers/common"
 )
 
