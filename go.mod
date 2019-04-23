@@ -45,6 +45,7 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/stretchr/testify v1.2.2 // indirect
 	github.com/ugorji/go v1.1.4 // indirect
+
 	golang.org/x/net v0.0.0-20181220203305-927f97764cc3 // indirect
 	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
 	gopkg.in/dgrijalva/jwt-go.v3 v3.2.0
