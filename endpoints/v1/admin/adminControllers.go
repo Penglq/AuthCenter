@@ -1,9 +1,14 @@
 package admin
 
 import (
+	"github.com/Penglq/AuthCenter/libs"
 	"github.com/gin-gonic/gin"
 )
 
-func Admin(ctx *gin.Context)  {
-	ctx.JSON(0, gin.H{})
+func Login(ctx *gin.Context)  {
+	jwt := libs.NewJwt()
+	jwt.GenerateToken()
+	ctx.JSON(0, gin.H{
+		"jwt": "",
+	})
 }

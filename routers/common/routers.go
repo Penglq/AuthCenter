@@ -9,14 +9,12 @@ type Router struct {
 }
 
 func (r *Router) SetMiddlewares(routerMiddleware ...gin.HandlerFunc) *Router {
-	for _,middleware := range routerMiddleware {
-		r.Use(middleware)
-	}
+	r.Use(routerMiddleware...)
 	return r
 }
 
-func (r *Router) SetRouter(setRouters ...func( *Router)) *Router {
-	for _,setRouter := range setRouters {
+func (r *Router) SetRouter(setRouters ...func(*Router)) *Router {
+	for _, setRouter := range setRouters {
 		setRouter(r)
 	}
 	return r

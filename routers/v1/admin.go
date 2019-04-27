@@ -2,11 +2,11 @@ package v1
 
 import (
 	"github.com/Penglq/AuthCenter/endpoints/v1/admin"
-	"github.com/Penglq/AuthCenter/routers/common"
+	"github.com/gin-gonic/gin"
 )
 
-func Admin(r *common.Router)  {
+func Admin(r *gin.Engine)  {
 	g := r.Group(`/api`)
 	// 登录
-	g.POST("/login", admin.Admin)
+	g.POST("/login", admin.Login)
 }

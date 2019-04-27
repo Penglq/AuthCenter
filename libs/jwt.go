@@ -27,8 +27,6 @@ type Jwt struct {
 	Issuer      string `json:"iss,omitempty"` // iss 是签名的发行者.
 	NotBefore   int64  `json:"nbf,omitempty"` // nbf 这条token信息生效时间.这个值可以不设置,但是设定后,一定要小于当前Unix UTC,否则token将会延迟生效.
 	Subject     string `json:"sub"`           // sub 签名面向的用户(用户名)
-	Object      string `json:"obj"`           // obj 用户访问路径
-	Domain      string `json:"dom"`           // 租户信息
 	SecretKey   string `json:"secretKey"`     // jwt签名密钥
 	TokenString string `json:"token"`         // 生成的token
 }
@@ -41,14 +39,12 @@ func (j *Jwt) GenerateToken() (string, error) {
 	if j.Issuer == "" {
 		j.Issuer = DefaultIss
 	}
-	exp := time.Unix(j.ExpiresAt, 0)
-	iat := time.Now().Unix() - 100
+	
+	j.IssuedAt = time.Now().Unix() - 100
 	claims["iss"] = j.Issuer
-	claims["exp"] = exp
-	claims["iat"] = iat
+	claims["exp"] = j.ExpiresAt
+	claims["iat"] = j.IssuedAt
 	claims["sub"] = j.Subject
-	claims["obj"] = j.Object
-	claims["dom"] = j.Domain
 	claims["aud"] = j.Audience
 	claims["jti"] = j.Audience
 	jwtSvc.Claims = claims
@@ -87,13 +83,6 @@ func (j *Jwt) ParseToken() error {
 	if j.Subject, ok = claims["sub"].(string); !ok {
 		return fmt.Errorf("claims assert subject to string failed | claims | %+v ", claims)
 	}
-	if j.Object, ok = claims["obj"].(string); !ok {
-		return fmt.Errorf("claims assert object to string failed | claims | %+v ", claims)
-	}
-	if j.Domain, ok = claims["dom"].(string); !ok {
-		return fmt.Errorf("claims assert domain to string failed | claims | %+v ", claims)
-	}
-
 	if j.Audience, ok = claims["aud"].(string); !ok {
 		return fmt.Errorf("claims assert audience to string failed | claims | %+v ", claims)
 	}

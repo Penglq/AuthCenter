@@ -15,11 +15,9 @@ func NewJwt() gin.HandlerFunc {
 		err := jwts.ParseToken()
 		if err != nil {
 			// todo 错误
+			return
 		}
-		ctx.Set("casbin", checkAuth{
-			Subject: jwts.Subject,
-			Object:  jwts.Object,
-			Domain:  jwts.Domain,
-		})
+		ctx.Set(CasbinSub, jwts.Subject)
+		ctx.Next()
 	}
 }
