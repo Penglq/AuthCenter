@@ -29,5 +29,10 @@ type Logger struct {
 
 // headers
 const (
-	XAuthToken = `X-AUTH-TOKEN`
+	CasbinKey     = "casbinKey"
+	CasbinSub     = "casbinSub"
+	XAuthToken    = `X-AUTH-TOKEN`
+	XClientDomain = "X-CLIENT-DOMAIN"
+	XClientObject = "X-CLIENT-OBJECT"
+	XClientACTION = "X-CLIENT-ACTION"
 )

@@ -39,11 +39,13 @@ func (j *Jwt) GenerateToken() (string, error) {
 	if j.Issuer == "" {
 		j.Issuer = DefaultIss
 	}
-	
-	j.IssuedAt = time.Now().Unix() - 100
+	if j.Audience == "" {
+		j.Audience = AudienceWap
+	}
+
 	claims["iss"] = j.Issuer
 	claims["exp"] = j.ExpiresAt
-	claims["iat"] = j.IssuedAt
+	claims["iat"] = time.Now().Unix() - 100
 	claims["sub"] = j.Subject
 	claims["aud"] = j.Audience
 	claims["jti"] = j.Audience

@@ -14,10 +14,11 @@ func NewJwt() gin.HandlerFunc {
 		jwts.TokenString = token
 		err := jwts.ParseToken()
 		if err != nil {
-			// todo 错误
-			return
+			ctx.Abort()
+			ctx.JSON(200, conf.ResMap.GetErrData(conf.SYSTERM_NONE))
+		} else {
+			ctx.Set(CasbinSub, jwts.Subject)
 		}
-		ctx.Set(CasbinSub, jwts.Subject)
 		ctx.Next()
 	}
 }
